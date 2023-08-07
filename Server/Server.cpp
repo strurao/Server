@@ -70,7 +70,7 @@ public:
 		bool desired = true;
 
 		// Spin Lock: spin이 계속 뺑뺑이 돌듯 쉬지않고 노크를 한다는 것 (존버멘탈)
-		// 장점:
+		// 장점: 
 		// 단점: CPU cost 가 크다. 기내화장실 대기 중인데 앞사람이 술취 후 잠들었다면?
 		while (_flag.compare_exchange_strong(expected, desired) == false)
 		{
@@ -136,9 +136,10 @@ void HelloThread(int i)
 	}
 }
 
-int main()
+
+/*int main()
 {
-	/*
+	//
 	vector<thread> threads;
 
 	// 직원 배치하기
@@ -157,7 +158,7 @@ int main()
 		int a = t.hardware_concurrency(); // 병렬처리 가능한 CPU 코어 개수. 내 PC는 16개이다
 		t.join(); // 끝날 때까지 대기한다
 	}
-	*/
+	//
 
 	v.reserve(100000);
 
@@ -169,4 +170,5 @@ int main()
 
 	cout << v.size() << endl;
 }
+*/
 
