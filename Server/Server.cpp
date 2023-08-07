@@ -3,16 +3,17 @@ using namespace std;
 #include <thread> // c++ 표준 라이브러리
 #include <vector>
 #include "windows.h"
-#include <atomic>
+#include <atomic> // 원자적! 공유자원과 연관이 있다. 그러나 교통정리를 하느라 훨씬 느리다
 #include <Windows.h>
 
 
 /*
-영역     주의    사유
-Code     X      딱히 수정하지 않음
-Stack    X      스레드마다 자신만의 고유의 스택 영역을 사용
-Heap     O      공유해서 사용하므로 복잡한 문제가 생길 수 있다
-Data     O      공유해서 사용하므로 복잡한 문제가 생길 수 있다
+영역    주의   사유                                 예
+
+Code    X     딱히 수정하지 않음
+Stack   X     스레드마다 자신만의 고유스택영역을 사용   지역변수
+Heap    O     공유하므로 복잡한 문제가 생길 수 있다
+Data    O     공유하므로 복잡한 문제가 생길 수 있다    전역/static변수 (코어끼리의 공유자원)
 */
 
 
@@ -40,6 +41,8 @@ void HelloThread(int i)
 	}
 }
 
+
+/*
 int main()
 {
 	vector<thread> threads;
@@ -61,12 +64,6 @@ int main()
 		t.join(); // 끝날 때까지 대기한다
 	}
 		
-	/*
-	while (true) 
-	{
-
-	}
-	*/
-
 	// SetCursorOnOff(false);
 }
+*/
