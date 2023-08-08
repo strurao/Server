@@ -95,45 +95,48 @@ void Thread_2 ()
 }
 */
 
-int main()
-{
-	/*
-	커널 오브젝트 EVENT
-	- Usage Count
-	- Signal (파란불) / Non-Signal (빨간불)
-	*/
+// ctrl k /
+//int main()
+//{
+//	/*
+//	커널 오브젝트 EVENT
+//	- Usage Count
+//	- Signal (파란불) / Non-Signal (빨간불)
+//	*/
+//
+//	// Auto / Manual < bool
+//	// 삼국지의 봉화대처럼 껐다 켰다 할 수 있다
+//
+//	hEvent = ::CreateEvent(NULL/*보안속성*/, FALSE/*bManualReset*/, FALSE/*초기상태*/, NULL);
+//
+//	thread t1(Producer);
+//	thread t2(Consumer);
+//
+//	t1.join();
+//	t2.join();
+//
+//	::CloseHandle(hEvent);
+//	///*
+//	int count = 0;
+//	while (true)
+//	{
+//		ready = false;
+//		count++;
+//
+//		x = y = r1 = r2 = 0;
+//
+//		thread t1(Thread_1);
+//		thread t2(Thread_2);
+//
+//		ready = true;
+//
+//		t1.join();
+//		t2.join();
+//
+//		if (r1 == 0 && r2 == 0)
+//			break;
+//	}
+//	cout << count << endl;
+//	//*/
+//}
 
-	// Auto / Manual < bool
-	// 삼국지의 봉화대처럼 껐다 켰다 할 수 있다
-	hEvent = ::CreateEvent(NULL/*보안속성*/, FALSE/*bManualReset*/, FALSE/*초기상태*/, NULL);
-
-	thread t1(Producer);
-	thread t2(Consumer);
-
-	t1.join();
-	t2.join();
-
-	::CloseHandle(hEvent);
-	/*
-	int count = 0;
-	while (true)
-	{
-		ready = false;
-		count++;
-
-		x = y = r1 = r2 = 0;
-
-		thread t1(Thread_1);
-		thread t2(Thread_2);
-
-		ready = true;
-
-		t1.join();
-		t2.join();
-
-		if (r1 == 0 && r2 == 0)
-			break;
-	}
-	cout << count << endl;
-	*/
-}

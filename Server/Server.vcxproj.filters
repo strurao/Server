@@ -21,5 +21,8 @@
     <ClCompile Include="Server02.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="smartPointer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
