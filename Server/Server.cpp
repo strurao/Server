@@ -16,138 +16,71 @@ TCP 서버
 1) 새로운 소켓 생성          socket
 2) 소켓에 주소/포트 번호설정  bind
 3) 소켓 일 시키기           listen
-4) 손님 접속               accept
+4) 손님 접속                accept
 5) 클라와 통신
-*/
-
-/*
-UDP 서버
-1) 새로운 소켓 생성 (socket)
-2) 소켓에 주소/포트 번호 설정 (bind)
-3) 클라와 통신
 */
 
 int main()
 {
-	// 처음 
-	WSADATA wsaData;
-	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-		return 0;
+	SocketUtils::Init();
 
-	// 1) 소켓 생성, 통신 방식 설정
-	// ad : Address Family (AF_INET = IPv4, AF_INET6 = IPv6)
-	// type : TCP(SOCK_STREAM) vs UDP(SOCK_DGRAM)
-	// protocol : 0
-	// return : descriptor
-	//int32 errorCode = ::WSAGetLastError();
-	
-	// TCP 문지기 휴대폰
-	// SOCKET listenSocket = ::socket(AF_INET, SOCK_STREAM, 0); 
-	// UDP 문지기 휴대폰
-	SOCKET listenSocket = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); 
-
+	SOCKET listenSocket = ::socket(AF_INET, SOCK_STREAM, 0);
 	if (listenSocket == INVALID_SOCKET)
 		return 0;
 
-
-
-	/*
-	ABOUT SOCKET OPTION
-	
-	// Socket Option
-	- level (SOL_SOCKET, IPPROTO_IP, IPPROTO_TCP)
-	- optname
-	- optval
-	*/
-	// SO_KEEPALIVE : (생존확인) 주기적으로 연결 상태를 확인하는 옵션. TCP에서만 동작.
-	bool enable = true;
-	::setsockopt(listenSocket, SOL_SOCKET, SO_KEEPALIVE, (char*)&enable, sizeof(enable));
-	// SO_LINGER : 지연하다. 송신버퍼에 있는 데이터를 보낼지 날릴지에 관련된 옵션.
-	// SO_SNDBUF , SO_RCVBUF : 송수신버퍼 사이즈 변경 옵션.
-	int32 sendBufferSuze;
-	int32 optionLen = sizeof(sendBufferSuze);
-	::getsockopt(listenSocket, SOL_SOCKET, SO_SNDBUF, (char*)&sendBufferSuze, &optionLen);
-	cout << "송신 버퍼 크기 : " << sendBufferSuze << endl; //64KB
-	// SO_REUSEADDR : 무조건 내가 덮어써서 이미 다른 애가 쓰던 주소도 다시 쓰겠다. 그러면 서버 껐다가 킬 때 기다리지 않아도 된다.
-	{
-		bool enable = true;
-		::setsockopt(listenSocket, SOL_SOCKET, SO_REUSEADDR, (char*)&enable, sizeof(enable));
-	}
-	// IPPROTO_TCP : TCP_NODELAY = Nagle 알고리즘 작동 여부. 데이터가 충분히 크면 보내고 그렇지 않으면 대기 후 뭉쳐보내는 알고리즘. 장점은 소소한 패킷의 불필요한 전송을 예방.
-
-
-
-	// 2) 주소/포트 번호 설정 (bind)
-	// 연결할 목적지는? (IP주소 + Port) -> XX 아파트 YY 호
-	SOCKADDR_IN serverAddr; // 우리 레스토랑의 상호 주소
-	::memset(&serverAddr, 0, sizeof(serverAddr));
-	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY); // INADDR_ANY 에 Ipv4 주소인  192.168.XX.X 가 들어간다
-	serverAddr.sin_port = ::htons(7777); // 7777port를 개통하겠다! 참고로 80port는 HTTP
-
-	// host to network short
-	// Little-Endian vs Big-Endian
-	// ex) 0x12345678 4바이트 정수
-	// low [0x78][0x56][0x34][0x12] high < little
-	// low [0x12][0x34][0x56][0x78] high < big = network 표준
-
-	if (::bind(listenSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) // binding 해준다
+	// https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-ioctlsocket
+	// 논블로킹 소켓으로
+	u_long on = 1;
+	if (::ioctlsocket(listenSocket, FIONBIO, &on) == INVALID_SOCKET)
 		return 0;
 
-	// 3) 업무 개시 (listen)
-	// if (::listen(listenSocket, SOMAXCONN) == SOCKET_ERROR)
-	//  	return 0;
+	SocketUtils::SetReuseAddress(listenSocket, true);
 
-	// 4) 손님 맞이 (accept)
+	if (SocketUtils::BindAnyAddress(listenSocket, 7777) == false)
+		return 0;
+
+	if (SocketUtils::Listen(listenSocket, SOMAXCONN) == false)
+		return 0;
+
+	SOCKADDR_IN clientAddr;
+	int32 addrLen = sizeof(clientAddr);
+
+	// Accept
 	while (true)
 	{
-		SOCKADDR_IN clientAddr; // 상대방 주소
-		::memset(&clientAddr, 0, sizeof(clientAddr));
-		int32 addrLen = sizeof(clientAddr);
-
-		// 상대방 소켓 부여. 동접5000명이라면 5000개의 clientSocket
-		// 손님이 없다면 (상대방 쪽에서 connect 하지 않는다면) accept에서 대기한다. 멈춰있다.
-		
-		/*
+		// 마냥 대기하지 않고 무조건 빠져나온다는 것이 큰 차이점이다
 		SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
-		if (clientSocket == INVALID_SOCKET)
-			return 0;
+		// 아직까지 나한테 접속 요청한 클라이언트가 없다면
+		if (clientSocket == INVALID_SOCKET) 
+		{
+			// 원래라면 블로킹(WSAEWOULDBLOCK) 했어야 했는데... 너가 논블로킹으로 하라며?
+			if (::WSAGetLastError() == WSAEWOULDBLOCK) 
+				continue; // 진짜 에러는 아니고 아무도 없다는 의미이니까 빠져나오기
+		}
 
-		// 손님 입장!
-		char ip[16];
-		::inet_ntop(AF_INET, &clientAddr.sin_addr, ip, sizeof(ip));
-		cout << "Client Connected! IP = " << ip << endl;
-		*/
+		// 접속 요청이 들어왔다면
+		cout << "Client Connected!" << endl;
 
-		// 5) TODO 패킷
-		// while (true)
-		// {
-			// msg 수신하는 가장 기본적인 함수는 recv()
-			char recvBuffer[100]; // 커널의 recvBuffer 에 있는 걸 내가 지정한 (유저레벨) 곳에 복사해줘
+		// Recv
+		while (true)
+		{
+			char recvBuffer[1000];
+			int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
+			if (recvLen == SOCKET_ERROR)
+			{
+				// 원래 블로킹했어야 했는데... 너가 논블로킹으로 하라며?
+				if (::WSAGetLastError() == WSAEWOULDBLOCK)
+					continue;
+
+				// TODO
+				break;
+			}
+
 			
-			// TCP
-			// int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
-			// UDP
-			int32 recvLen = ::recvfrom(listenSocket, recvBuffer, sizeof(recvBuffer), 0, (SOCKADDR*)&clientAddr, &addrLen);
-			if (recvLen <= 0) // 오류가 아니라면 성공적으로 msg 받음
-				return 0;
-
-			cout << "Recv Data : " << recvBuffer << endl;
-			cout << "Recv Data Len : " << recvLen << endl;
-
-			// TCP
-			// int32 resultCode = ::send(clientSocket, recvBuffer, recvLen, 0);
-			// if (resultCode == SOCKET_ERROR)
-			//  	return 0;
-
-			this_thread::sleep_for(1s);
-		// }
+			cout << "Recv Data = " << recvBuffer << endl;
+			cout << "Recv Data len = " << recvLen << endl;
+		}
 	}
 
-	// --------------------------
-
-	// 끝
-	::closesocket(listenSocket);
-	::WSACleanup();
-
+	SocketUtils::Clear();
 }
