@@ -29,7 +29,7 @@ int main()
 		return 0;
 
 	// https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-ioctlsocket
-	// 논블로킹 소켓으로
+	// 논블로킹 소켓으로 -> 기다리지 않고 빠져나오는 비동기 방식
 	u_long on = 1;
 	if (::ioctlsocket(listenSocket, FIONBIO, &on) == INVALID_SOCKET)
 		return 0;

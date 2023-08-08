@@ -64,7 +64,7 @@ int main()
 			cout << "Send Data ! Len = " << sendLen << endl;
 		}
 
-		this_thread::sleep_for(1s);
+		this_thread::sleep_for(1s); // 1초마다 데이터를 전송
 	}
 
 
