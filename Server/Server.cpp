@@ -80,7 +80,7 @@ int main()
 		while (true)
 		{
 			// msg 수신하는 가장 기본적인 함수는 recv()
-			char recvBuffer[100];
+			char recvBuffer[100]; // 커널의 recvBuffer 에 있는 걸 내가 지정한 (유저레벨) 곳에 복사해줘
 			int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
 			if (recvLen <= 0) // 오류가 아니라면 성공적으로 msg 받음
 				return 0;
