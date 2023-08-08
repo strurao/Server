@@ -49,6 +49,34 @@ int main()
 	if (listenSocket == INVALID_SOCKET)
 		return 0;
 
+
+
+	/*
+	ABOUT SOCKET OPTION
+	
+	// Socket Option
+	- level (SOL_SOCKET, IPPROTO_IP, IPPROTO_TCP)
+	- optname
+	- optval
+	*/
+	// SO_KEEPALIVE : (생존확인) 주기적으로 연결 상태를 확인하는 옵션. TCP에서만 동작.
+	bool enable = true;
+	::setsockopt(listenSocket, SOL_SOCKET, SO_KEEPALIVE, (char*)&enable, sizeof(enable));
+	// SO_LINGER : 지연하다. 송신버퍼에 있는 데이터를 보낼지 날릴지에 관련된 옵션.
+	// SO_SNDBUF , SO_RCVBUF : 송수신버퍼 사이즈 변경 옵션.
+	int32 sendBufferSuze;
+	int32 optionLen = sizeof(sendBufferSuze);
+	::getsockopt(listenSocket, SOL_SOCKET, SO_SNDBUF, (char*)&sendBufferSuze, &optionLen);
+	cout << "송신 버퍼 크기 : " << sendBufferSuze << endl; //64KB
+	// SO_REUSEADDR : 무조건 내가 덮어써서 이미 다른 애가 쓰던 주소도 다시 쓰겠다. 그러면 서버 껐다가 킬 때 기다리지 않아도 된다.
+	{
+		bool enable = true;
+		::setsockopt(listenSocket, SOL_SOCKET, SO_REUSEADDR, (char*)&enable, sizeof(enable));
+	}
+	// IPPROTO_TCP : TCP_NODELAY = Nagle 알고리즘 작동 여부. 데이터가 충분히 크면 보내고 그렇지 않으면 대기 후 뭉쳐보내는 알고리즘. 장점은 소소한 패킷의 불필요한 전송을 예방.
+
+
+
 	// 2) 주소/포트 번호 설정 (bind)
 	// 연결할 목적지는? (IP주소 + Port) -> XX 아파트 YY 호
 	SOCKADDR_IN serverAddr; // 우리 레스토랑의 상호 주소
