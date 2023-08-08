@@ -77,11 +77,12 @@ int main()
 		cout << "Client Connected! IP = " << ip << endl;
 
 		// 5) TODO 패킷
-		while (false)
+		while (true)
 		{
+			// msg 수신하는 가장 기본적인 함수는 recv()
 			char recvBuffer[100];
 			int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
-			if (recvLen <= 0)
+			if (recvLen <= 0) // 오류가 아니라면 성공적으로 msg 받음
 				return 0;
 
 			cout << "Recv Data : " << recvBuffer << endl;

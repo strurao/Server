@@ -36,11 +36,11 @@ int main()
 
 	while (true)
 	{
-		// TODO
-
+		// TODO 패킷
+		// msg 전송하는 가장 기본적인 함수는 send()
 		char sendBuffer[100] = "Hello! I am Client";
 		int32 resultCode = ::send(clientSocket, sendBuffer, sizeof(sendBuffer), 0);
-		if (resultCode == SOCKET_ERROR)
+		if (resultCode == SOCKET_ERROR) // 오류가 아니라면 성공적으로 msg 보냄
 			return 0;
 
 		char recvBuffer[100];
