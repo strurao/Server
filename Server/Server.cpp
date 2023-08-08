@@ -12,12 +12,19 @@ using namespace std;
 #include "ThreadManager.h"
 
 /*
-서버
+TCP 서버
 1) 새로운 소켓 생성          socket
 2) 소켓에 주소/포트 번호설정  bind
 3) 소켓 일 시키기           listen
 4) 손님 접속               accept
 5) 클라와 통신
+*/
+
+/*
+UDP 서버
+1) 새로운 소켓 생성 (socket)
+2) 소켓에 주소/포트 번호 설정 (bind)
+3) 클라와 통신
 */
 
 int main()
@@ -33,7 +40,12 @@ int main()
 	// protocol : 0
 	// return : descriptor
 	//int32 errorCode = ::WSAGetLastError();
-	SOCKET listenSocket = ::socket(AF_INET, SOCK_STREAM, 0); // 문지기 휴대폰
+	
+	// TCP 문지기 휴대폰
+	// SOCKET listenSocket = ::socket(AF_INET, SOCK_STREAM, 0); 
+	// UDP 문지기 휴대폰
+	SOCKET listenSocket = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); 
+
 	if (listenSocket == INVALID_SOCKET)
 		return 0;
 
@@ -55,8 +67,8 @@ int main()
 		return 0;
 
 	// 3) 업무 개시 (listen)
-	if (::listen(listenSocket, SOMAXCONN) == SOCKET_ERROR)
-		return 0;
+	// if (::listen(listenSocket, SOMAXCONN) == SOCKET_ERROR)
+	//  	return 0;
 
 	// 4) 손님 맞이 (accept)
 	while (true)
@@ -67,6 +79,8 @@ int main()
 
 		// 상대방 소켓 부여. 동접5000명이라면 5000개의 clientSocket
 		// 손님이 없다면 (상대방 쪽에서 connect 하지 않는다면) accept에서 대기한다. 멈춰있다.
+		
+		/*
 		SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
 		if (clientSocket == INVALID_SOCKET)
 			return 0;
@@ -75,29 +89,37 @@ int main()
 		char ip[16];
 		::inet_ntop(AF_INET, &clientAddr.sin_addr, ip, sizeof(ip));
 		cout << "Client Connected! IP = " << ip << endl;
+		*/
 
 		// 5) TODO 패킷
-		while (true)
-		{
+		// while (true)
+		// {
 			// msg 수신하는 가장 기본적인 함수는 recv()
 			char recvBuffer[100]; // 커널의 recvBuffer 에 있는 걸 내가 지정한 (유저레벨) 곳에 복사해줘
-			int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
+			
+			// TCP
+			// int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
+			// UDP
+			int32 recvLen = ::recvfrom(listenSocket, recvBuffer, sizeof(recvBuffer), 0, (SOCKADDR*)&clientAddr, &addrLen);
 			if (recvLen <= 0) // 오류가 아니라면 성공적으로 msg 받음
 				return 0;
 
 			cout << "Recv Data : " << recvBuffer << endl;
 			cout << "Recv Data Len : " << recvLen << endl;
 
-			int32 resultCode = ::send(clientSocket, recvBuffer, recvLen, 0);
-			if (resultCode == SOCKET_ERROR)
-				return 0;
-		}
+			// TCP
+			// int32 resultCode = ::send(clientSocket, recvBuffer, recvLen, 0);
+			// if (resultCode == SOCKET_ERROR)
+			//  	return 0;
+
+			this_thread::sleep_for(1s);
+		// }
 	}
 
 	// --------------------------
 
 	// 끝
-	// ::closesocket(listensocket);
+	::closesocket(listenSocket);
 	::WSACleanup();
 
 }
