@@ -14,6 +14,12 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include <Windows.h>
 #include <iostream>
 using namespace std;
+
+// 순서 중요!
+#include <WinSock2.h>
+#include <WS2tcpip.h>
+#include <Windows.h>
+
+#pragma comment(lib, "ws2_32.lib")
