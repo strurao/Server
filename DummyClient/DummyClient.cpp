@@ -26,7 +26,7 @@ int main()
 	::inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr); // 루프백 주소 127.0.0.1
 	serverAddr.sin_port = ::htons(7777); // 80 : HTTP
 
-	// 바인딩 대신 커넥트
+	// 바인딩 대신 커넥트 (전화를 건다)
 	if (::connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 		return 0;
 

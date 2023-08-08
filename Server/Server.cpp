@@ -49,7 +49,7 @@ int main()
 	// Little-Endian vs Big-Endian
 	// ex) 0x12345678 4바이트 정수
 	// low [0x78][0x56][0x34][0x12] high < little
-	// low [0x12][0x34][0x56][0x78] high < big = network
+	// low [0x12][0x34][0x56][0x78] high < big = network 표준
 
 	if (::bind(listenSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) // binding 해준다
 		return 0;
@@ -65,8 +65,9 @@ int main()
 		::memset(&clientAddr, 0, sizeof(clientAddr));
 		int32 addrLen = sizeof(clientAddr);
 
-		// 손님이 없다면 accept에서 대기한다. 멈춰있다.
-		SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen); // 상대방 소켓 부여
+		// 상대방 소켓 부여. 동접5000명이라면 5000개의 clientSocket
+		// 손님이 없다면 (상대방 쪽에서 connect 하지 않는다면) accept에서 대기한다. 멈춰있다.
+		SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
 		if (clientSocket == INVALID_SOCKET)
 			return 0;
 
@@ -75,7 +76,7 @@ int main()
 		::inet_ntop(AF_INET, &clientAddr.sin_addr, ip, sizeof(ip));
 		cout << "Client Connected! IP = " << ip << endl;
 
-		// 5) TODO
+		// 5) TODO 패킷
 		while (false)
 		{
 			char recvBuffer[100];
