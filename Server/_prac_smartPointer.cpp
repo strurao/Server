@@ -37,7 +37,7 @@ public:
 	TSharedPtr() {}
 	TSharedPtr(T* ptr) { Set(ptr); }
 
-	// 복사... 어딘가에서 복사가 일어난다면 AddRef() 가 호출된다.
+	// 복사... 어딘가에서 복사가 일어난다면 AddRef() 가 호출된다
 	TSharedPtr(const TSharedPtr& other) { Set(other._ptr); }
 	// 이동
 	TSharedPtr(TSharedPtr&& other) { _ptr = other._ptr; other._ptr = nullptr; }
@@ -115,10 +115,11 @@ void Test(KnightRef knight)
 
 }
 
-int main()
-{
-	KnightRef knightSP(new Knight());
-
-	/*Knight* knight = new Knight();
-	knight->ReleaseRef();*/
-}
+//int main()
+//{
+//	KnightRef knightSP(new Knight());
+//	Test(knightSP);
+//
+//	/*Knight* knight = new Knight();
+//	knight->ReleaseRef();*/
+//}

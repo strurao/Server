@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\Main">
+      <UniqueIdentifier>{0c096a59-cf85-4b93-9a18-74c57aba04a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Network">
+      <UniqueIdentifier>{12b68608-fbae-4219-8890-0760cccef6d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Thread">
+      <UniqueIdentifier>{c00ab3ce-612a-451a-8160-01a62ed81712}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Utils">
+      <UniqueIdentifier>{d0779dcf-7fc5-47bd-baa4-5a85d6f018f0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreGlobal.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreMacro.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePch.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreTLS.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadManager.h">
+      <Filter>소스 파일\Thread</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreGlobal.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreMacro.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CorePch.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreTLS.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadManager.cpp">
+      <Filter>소스 파일\Thread</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
