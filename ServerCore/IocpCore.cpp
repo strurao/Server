@@ -30,8 +30,8 @@ bool IocpCore::Register(IocpObject* iocpObject)
 bool IocpCore::Dispatch(uint32 timeoutMs)
 {
 	DWORD numOfBytes = 0;
-	IocpObject* iocpObject = nullptr;
-	IocpEvent* iocpEvent = nullptr;
+	IocpObject* iocpObject = nullptr; // 티켓 
+	IocpEvent* iocpEvent = nullptr; // 티켓
 
 	if (::GetQueuedCompletionStatus(_iocpHandle, OUT & numOfBytes, OUT reinterpret_cast<PULONG_PTR>(&iocpObject), OUT reinterpret_cast<LPOVERLAPPED*>(&iocpEvent), timeoutMs))
 	{

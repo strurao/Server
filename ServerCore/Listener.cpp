@@ -40,12 +40,12 @@ bool Listener::StartAccept(NetAddress netAddress)
 	if (SocketUtils::Listen(_socket) == false)
 		return false;
 
-	const int32 acceptCount = 1;
+	const int32 acceptCount = 1; // 낚싯대를 한 개만 던져주기
 	for (int32 i = 0; i < acceptCount; i++)
 	{
 		IocpEvent* acceptEvent = new IocpEvent(EventType::Accept);
 		_acceptEvents.push_back(acceptEvent);
-		RegisterAccept(acceptEvent);
+		RegisterAccept(acceptEvent); // 발급받은 이벤트로 레지스터
 	}
 
 	return false;
