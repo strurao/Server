@@ -12,6 +12,7 @@ enum class EventType : uint8
 
 /*--------------
 	IocpEvent
+	ф╪до
 ---------------*/
 
 struct IocpEvent : public OVERLAPPED

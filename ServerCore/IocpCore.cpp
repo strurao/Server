@@ -7,6 +7,7 @@ IocpCore GIocpCore;
 
 /*--------------
 	IocpCore
+	IocpQueue¸¦ ´ã´ç
 ---------------*/
 
 IocpCore::IocpCore()

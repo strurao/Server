@@ -5,7 +5,7 @@
 
 /*--------------
 	Listener
-	문지기 역할
+	문지기 역할. 관찰 대상
 ---------------*/
 
 class Listener : public IocpObject
