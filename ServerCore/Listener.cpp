@@ -61,12 +61,14 @@ HANDLE Listener::GetHandle()
 	return reinterpret_cast<HANDLE>(_socket);
 }
 
+/* acceptEvent 를 꺼내고 실행하는 단계 */
 void Listener::Dispatch(IocpEvent* acceptEvent, int32 numOfBytes)
 {
 	assert(acceptEvent->type == EventType::Accept);
 	ProcessAccept(acceptEvent);
 }
 
+/* 등록 단계 */
 void Listener::RegisterAccept(IocpEvent* acceptEvent)
 {
 	Session* session = new Session();
