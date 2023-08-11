@@ -16,7 +16,7 @@ public:
 
 public:
 	/* 외부에서 사용 */
-	bool StartAccept(NetAddress netAddress);
+	bool StartAccept(ServerServiceRef netAddress);
 	void CloseSocket();
 
 public:
@@ -32,5 +32,6 @@ private:
 protected:
 	SOCKET _socket = INVALID_SOCKET;
 	vector<IocpEvent*> _acceptEvents;
+	ServerServiceRef _service; // 내가 어떤 서비스를 실행하고 있는지 
 };
 
