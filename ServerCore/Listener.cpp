@@ -39,19 +39,19 @@ bool Listener::StartAccept(ServerServiceRef service)
 	if (SocketUtils::SetLinger(_socket, 0, 0) == false)
 		return false;
 
-	if (SocketUtils::Bind(_socket, service->GetNetAddress()) == false)
+	if (SocketUtils::Bind(_socket, _service->GetNetAddress()) == false)
 		return false;
 
 	if (SocketUtils::Listen(_socket) == false)
 		return false;
 
-	const int32 acceptCount = 1; // 낚싯대를 한 개만 던져주기
+	const int32 acceptCount = _service->GetMaxSessionCount();
 	for (int32 i = 0; i < acceptCount; i++)
 	{
 		IocpEvent* acceptEvent = new IocpEvent(EventType::Accept);
 		acceptEvent->owner = shared_from_this();
 		_acceptEvents.push_back(acceptEvent);
-		RegisterAccept(acceptEvent); // 발급받은 이벤트로 레지스터
+		RegisterAccept(acceptEvent);
 	}
 
 	return true;
@@ -67,23 +67,21 @@ HANDLE Listener::GetHandle()
 	return reinterpret_cast<HANDLE>(_socket);
 }
 
-/* acceptEvent 를 꺼내고 실행하는 단계 */
 void Listener::Dispatch(IocpEvent* acceptEvent, int32 numOfBytes)
 {
 	assert(acceptEvent->type == EventType::Accept);
 	ProcessAccept(acceptEvent);
 }
 
-/* 등록 단계 */
 void Listener::RegisterAccept(IocpEvent* acceptEvent)
 {
-	SessionRef session = make_shared<Session>();
+	SessionRef session = _service->CreateSession(); // Register IOCP
 
 	acceptEvent->Init();
 	acceptEvent->session = session;
 
 	DWORD bytesReceived = 0;
-	if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer, 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
+	if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer.WritePos(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
 	{
 		const int32 errorCode = ::WSAGetLastError();
 		if (errorCode != WSA_IO_PENDING)
@@ -112,11 +110,9 @@ void Listener::ProcessAccept(IocpEvent* acceptEvent)
 		return;
 	}
 
-	session->SetNetAddress(NetAddress(sockAddress));
-
 	cout << "Client Connected!" << endl;
 
-	// TODO
-
+	session->SetNetAddress(NetAddress(sockAddress));
+	session->ProcessConnect();
 	RegisterAccept(acceptEvent);
 }

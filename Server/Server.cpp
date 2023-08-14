@@ -9,12 +9,7 @@ using namespace std;
 #include "SocketUtils.h"
 #include "Listener.h"
 #include "Service.h"
-#include "Session.h"
-
-class GameSession : public Session
-{
-
-};
+#include "GameSession.h"
 
 int main()
 {

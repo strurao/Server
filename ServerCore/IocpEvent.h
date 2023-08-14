@@ -5,6 +5,7 @@ class Session;
 enum class EventType : uint8
 {
 	Connect,
+	Disconnect,
 	Accept,
 	Recv,
 	Send
@@ -24,4 +25,7 @@ struct IocpEvent : public OVERLAPPED
 	EventType	type;
 	IocpObjectRef owner = nullptr; // 나의 주인님이 누구인가
 	SessionRef session = nullptr; // Accept Only
+
+	// TEMP
+	vector<BYTE> buffer;
 };
