@@ -1,5 +1,11 @@
 #include "pch.h"
 #include "ThreadManager.h"
+#include "CoreTLS.h"
+#include "CoreGlobal.h"
+
+/*------------------
+	ThreadManager
+-------------------*/
 
 ThreadManager::ThreadManager()
 {
@@ -14,7 +20,8 @@ ThreadManager::~ThreadManager()
 
 void ThreadManager::Launch(function<void(void)> callback)
 {
-	LockGuard quard(_lock);
+	LockGuard guard(_lock);
+
 	_threads.push_back(thread([=]()
 		{
 			InitTLS();
@@ -41,4 +48,5 @@ void ThreadManager::InitTLS()
 
 void ThreadManager::DestroyTLS()
 {
+
 }

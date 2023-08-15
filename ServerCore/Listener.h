@@ -2,10 +2,10 @@
 #include "IocpCore.h"
 #include "NetAddress.h"
 
+class AcceptEvent;
 
 /*--------------
 	Listener
-	문지기 역할. 관찰 대상
 ---------------*/
 
 class Listener : public IocpObject
@@ -16,7 +16,7 @@ public:
 
 public:
 	/* 외부에서 사용 */
-	bool StartAccept(ServerServiceRef netAddress);
+	bool StartAccept(ServerServiceRef service);
 	void CloseSocket();
 
 public:
@@ -32,6 +32,6 @@ private:
 protected:
 	SOCKET _socket = INVALID_SOCKET;
 	vector<IocpEvent*> _acceptEvents;
-	ServerServiceRef _service; // 내가 어떤 서비스를 실행하고 있는지 
+	ServerServiceRef _service;
 };
 

@@ -5,6 +5,7 @@
 #include "CoreTLS.h"
 #include "CoreGlobal.h"
 
+
 #include <vector>
 #include <list>
 #include <queue>
@@ -14,16 +15,16 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <winsock2.h>
+#include <mswsock.h>
+#include <ws2tcpip.h>
+#include <winsock2.h>
+#include <windows.h>
 #include <iostream>
 using namespace std;
 
-// 순서 중요!
-#include <WinSock2.h>
-#include <MSWSock.h>
-#include <WS2tcpip.h>
-#include <Windows.h>
 #include <assert.h>
-
 #include "SocketUtils.h"
+#include "SendBuffer.h"
 
 #pragma comment(lib, "ws2_32.lib")
